@@ -10,9 +10,19 @@ def double_elements(list):
 
 #402
 def all_pairs_ordered(n):
-	position_two = [x for x in range(n+1)]
+	return [[y,x ] for y in range(n+1) for x in range((n+1)) ]
+	
+#print(all_pairs_ordered(2))
 
-	position_one = [[y,[x for x in range(position_two)]] for y in range((n+1)*3)]
-	return position_one
+#403
+def distribute(val, element):
 
-print(all_pairs_ordered(2))
+	return [x+[val] for x in element] 
+
+#print(distribute('k', [['o'], [0, 1, 2], ['o','o']]))
+
+#404
+def pascal(n):
+	return [distribute(x, [[] for y in range(n) ]) for x in range(n)]
+
+print(pascal(3))
