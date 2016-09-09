@@ -36,3 +36,34 @@ def pascal(n):
 ####
 #4A#
 ####
+
+def powerset(count, elements):
+	print("")
+	count += 1
+	print("count 1 = " + str(count))
+	if not elements:
+		return [[]]
+	
+	print("elements = "+ str(elements))	
+	print("elements[0] = "+ str([elements[0]]))
+	print("elements[1:] = " + str(elements[1:]))
+	print("")
+
+	tempPowerset = powerset(count, elements[1:])
+	print("tempPowerset = " + str(tempPowerset))
+	print("count 2 = " + str(count))
+
+	return tempPowerset + [[elements[0]] + n for n in powerset(count, elements[1:])]
+
+print(powerset(0, [1, 2, 3]))
+
+
+
+
+
+
+
+
+
+
+
