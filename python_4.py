@@ -37,61 +37,50 @@ def pascal(n):
 #4A#
 ####
 
-def powerset(count, elements):
-	print("")
-	count += 1
-	print("count 1 = " + str(count))
+def powerset( elements):
 
 	if not elements:
 		return [[]]
-	
-	print("elements = "+ str(elements))	
-	print("elements[0] = "+ str(elements[0]))
-	print("elements[1:] = " + str(elements[1:]))
 
-	tempPowerset = powerset(count, elements[1:])
-	print("tempPowerset = " + str(tempPowerset))
-	print("count 2 = " + str(count))
-	result = []
-	print("elements = "+ str(elements))	
-	
-	for n in powerset(count, elements[1:]):
-		print("loop:")
-		print("elements = "+ str(elements))	
-		print("elements[1:] = " + str(elements[1:]))
-		print("[elements[0]] + n = "+ str([elements[0]]) + " + "+ str(n))
-		result.append([elements[0]] + n)
-		print("result = " + str(result))
-		
+	tempPowerset = powerset(elements[1:])
 
-	print("tempPowerset + result = " + str(tempPowerset) + " + " + str(result))
-	return tempPowerset + result
+	for n in powerset(elements[1:]):
+		return tempPowerset + [[elements[0]] + n for n in powerset(elements[1:])]
 
-print(powerset(0, [1, 2,3 ]))
+print(powerset([1,2]))
 
-#[[elements[0]] + n for n in powerset(count, elements[1:])]
+#4A with comments
 
-# def powerset2(count, elements):
+# def powerset(count, elements):
+# 	print("")
 # 	count += 1
 # 	print("count 1 = " + str(count))
-# 	print("elements = " + str(elements))
+
 # 	if not elements:
-# 		print("nothing")
-# 		return[[]]
+# 		return [[]]
+	
+# 	print("elements = "+ str(elements))	
+# 	print("elements[0] = "+ str(elements[0]))
+# 	print("elements[1:] = " + str(elements[1:]))
 
+# 	tempPowerset = powerset(count, elements[1:])
+# 	print("tempPowerset = " + str(tempPowerset))
+# 	print("count 2 = " + str(count))
 # 	result = []
-# 	for n in powerset2(count, elements[2:]):
-# 		print("")
-# 		print("n = "+ str(n))
-# 		print(elements)
-# 		result.append(n)
-# 		print("count 2 = " + str(count))
+# 	print("elements = "+ str(elements))	
+	
+# 	for n in powerset(count, elements[1:]):
+# 		print("loop:")
+# 		print("elements = "+ str(elements))	
+# 		print("elements[1:] = " + str(elements[1:]))
+# 		print("[elements[0]] + n = "+ str([elements[0]]) + " + "+ str(n))
+# 		result.append([elements[0]] + n)
+# 		print("result = " + str(result))
+		
 
-# 	return result
-# print("")
-# print("powerset2:")
-# print(powerset2(0, [4, 3,2,1]))
-
+# 	print("tempPowerset + result = " + str(tempPowerset) + " + " + str(result))
+# 	return tempPowerset + result
+#print(powerset(0, [1, 2]))
 
 
 
