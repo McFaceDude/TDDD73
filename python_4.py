@@ -37,7 +37,7 @@ def pascal(n):
 #4A#
 ####
 
-def powerset( elements):
+def powerset(elements):
 
 	if not elements:
 		return [[]]
@@ -47,7 +47,7 @@ def powerset( elements):
 	for n in powerset(elements[1:]):
 		return tempPowerset + [[elements[0]] + n for n in powerset(elements[1:])]
 
-print(powerset([1,2]))
+#print(powerset([1,2]))
 
 #4A with comments
 
@@ -82,8 +82,70 @@ print(powerset([1,2]))
 # 	return tempPowerset + result
 #print(powerset(0, [1, 2]))
 
+#405
+
+def create_lock(code, message):
+	def lock(n):
+		if n == code:
+			return message
+		else:
+			return "Fel kod!"
+	return lock
+
+#my_lock = create_lock(42, "Yeaaah!")
+
+#print(my_lock(42))
+#406
+#print((lambda x: x*2)(3))
+#407
+#print((lambda x,y: x**2 + y**2)(2,3))
+#408
+#print((lambda x: (lambda y: y + x ))(5)(2))
+
+####
+#4B#
+####
+
+def generate_height(h0, v0, t0, a):
+	return lambda t: h0 + v0*(t - t0) + 0.5*a*(t - t0)**2
+
+#h_fas_ett = generate_height(0,0,0,290)
+#print(h_fas_ett(5))
 
 
+#409
+def keep_if(function, data):
+	res = ""
+	for i in data:
+		if function(i):
+			res += i
+	return res
 
+#print(keep_if(lambda bokstav: False, 'Vimes'))
 
+#410
+def foreach(function, list):
+	return [function(x) for x in list]
 
+#print(foreach(lambda x: x**3, [0, 1, 2, 3]))
+
+#411
+def compose(f):
+	return lambda x: f(f(x))
+
+def f(x): return x + 10
+def g(y): return 2 * y + 7
+#h = compose(f,g)
+#print(h(2))
+
+#412
+def repeat(func, n):
+	for i in range(n):
+		 return compose(func(x))
+	
+		
+	#return lambda x: compose(func(x))
+
+square_thrice = repeat(lambda x: x**2 , 3)
+
+print(square_thrice(3))
