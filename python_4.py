@@ -139,7 +139,7 @@ def g(y): return 2 * y + 7
 #h = compose(f,g)
 #print(h(2))
 
-#412 not working!
+#412 
 def repeat(func, n):
 
 	if n < 1:
@@ -151,17 +151,13 @@ def repeat(func, n):
 	else:
 		return  compose(func, repeat(func, n-1))
 
-
-	
-	
-
 square_thrice = repeat(lambda x: x**2 , 3)
 square_two = repeat(lambda x: x**2 , 2)
 square_once = repeat(lambda x: x**2 , 1)
 
-print(square_thrice(3))
-print(square_two(3))
-print(square_once(3))
+#print(square_thrice(3))
+#print(square_two(3))
+#print(square_once(3))
 
 """"
 "4C"
@@ -169,31 +165,43 @@ print(square_once(3))
 "##########"
 #del 1
 def smooth(func):
-	dx = 0.0001
+	dx = 0.001
 	return lambda x: (func(x-dx) + func(x) + func(x + dx))/3
 
-smoothed_square = smooth(lambda x: x**2)
+
 #print(smoothed_square(10))
 import math
-smoothed_sin = smooth(math.sin)
+
+#print(smoothed_sin)
 #print(math.sin(0.456))
 #print(smoothed_sin(0.456))
 
 #del 2
 def twice_smoothed_square(x):
-
-	res = smoothed_square(x)
-	return smoothed_square(res)
-#print(twice_smoothed_square(10))
+	smoothed_square = smooth(lambda x: x**2)
+	res = smooth(smoothed_square)
+	res2 = smooth(res)
+	return res2(x)
+print(twice_smoothed_square(10))
 
 def twice_smoothed_sin(x):
-	res = smoothed_sin(x)
-	return smoothed_sin(res)
+	smoothed_sin = smooth(math.sin)
+	res = smooth(smoothed_sin)
+	res2= smooth(res)
+	return res2(x)
 #print(twice_smoothed_sin(0.456))
 
 #part 3
-#Not working
-#def repeatedly_smoothed(func, n):
+def repeatedly_smoothed(func, n):
+	res = repeat(smooth, n)
+	return (res(func))
+
+
+fivefold_smoothed_square = repeatedly_smoothed(lambda x: x**2, 2)
+#print(fivefold_smoothed_square)
+fivefold_smoothed_sin = repeatedly_smoothed(math.sin, 5)
+#print(fivefold_smoothed_square(10))
+#print(fivefold_smoothed_sin(0.456))
 "##########"
 
 """"
