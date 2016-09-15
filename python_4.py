@@ -33,10 +33,10 @@ def pascal(n):
 	
 #print(pascal(7))
 
-####
-#4A#
-####
-
+""""
+"4A"
+"""
+"##########"
 def powerset(elements):
 
 	if not elements:
@@ -48,6 +48,7 @@ def powerset(elements):
 		return tempPowerset + [[elements[0]] + n for n in powerset(elements[1:])]
 
 #print(powerset([1,2]))
+"##########"
 
 #4A with comments
 
@@ -102,16 +103,16 @@ def create_lock(code, message):
 #408
 #print((lambda x: (lambda y: y + x ))(5)(2))
 
-####
-#4B#
-####
-
+""""
+"4B"
+"""
+"##########"
 def generate_height(h0, v0, t0, a):
 	return lambda t: h0 + v0*(t - t0) + 0.5*a*(t - t0)**2
 
 #h_fas_ett = generate_height(0,0,0,290)
 #print(h_fas_ett(5))
-
+"##########"
 
 #409
 def keep_if(function, data):
@@ -130,22 +131,73 @@ def foreach(function, list):
 #print(foreach(lambda x: x**3, [0, 1, 2, 3]))
 
 #411
-def compose(f):
-	return lambda x: f(f(x))
+def compose(f, g):
+	return lambda x: f(g(x))
 
 def f(x): return x + 10
 def g(y): return 2 * y + 7
 #h = compose(f,g)
 #print(h(2))
 
-#412
+#412 not working!
 def repeat(func, n):
-	for i in range(n):
-		 return compose(func(x))
+
+	if n < 1:
+		return lambda x:x
+
+	if n == 1:
+		return func
 	
-		
-	#return lambda x: compose(func(x))
+	else:
+		return  compose(func, repeat(func, n-1))
+
+
+	
+	
 
 square_thrice = repeat(lambda x: x**2 , 3)
+square_two = repeat(lambda x: x**2 , 2)
+square_once = repeat(lambda x: x**2 , 1)
 
 print(square_thrice(3))
+print(square_two(3))
+print(square_once(3))
+
+""""
+"4C"
+"""
+"##########"
+#del 1
+def smooth(func):
+	dx = 0.0001
+	return lambda x: (func(x-dx) + func(x) + func(x + dx))/3
+
+smoothed_square = smooth(lambda x: x**2)
+#print(smoothed_square(10))
+import math
+smoothed_sin = smooth(math.sin)
+#print(math.sin(0.456))
+#print(smoothed_sin(0.456))
+
+#del 2
+def twice_smoothed_square(x):
+
+	res = smoothed_square(x)
+	return smoothed_square(res)
+#print(twice_smoothed_square(10))
+
+def twice_smoothed_sin(x):
+	res = smoothed_sin(x)
+	return smoothed_sin(res)
+#print(twice_smoothed_sin(0.456))
+
+#part 3
+#Not working
+#def repeatedly_smoothed(func, n):
+"##########"
+
+""""
+"4D"
+"""
+"#########"
+
