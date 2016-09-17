@@ -245,35 +245,25 @@ def traverse(tree, inner_node_fn, leaf_fn, empty_tree_fn):
 	if is_leaf(tree):
 		return leaf_fn(tree)
 
-	return inner_node_fn(tree[1], traverse(left_subtree(tree), inner_node_fn, leaf_fn, empty_tree_fn), traverse(right_subtree(tree), inner_node_fn, leaf_fn, empty_tree_fn))
+	return inner_node_fn(tree[1], traverse(left_subtree(tree), inner_node_fn, leaf_fn, empty_tree_fn), 
+		traverse(right_subtree(tree), inner_node_fn, leaf_fn, empty_tree_fn))
 #print(traverse([6, 7, 8], inner_node_fn, leaf_fn, empty_tree_fn))
 
 #part 2
-def empty_tree_fn_2():
-	return False
-
-
-def leaf_fn_2(key):
-	return key 
-
-def inner_node_fn_2(og_key, key, left_value, right_value):
-	if key == og_key:
-		return true
-	return [left_value, key, right_value]
-
 
 def contains_key(og_key, tree):
+	return traverse(tree, lambda x,y,z: y or z or x == og_key, lambda x : x == og_key, lambda: False)
 
-	if is_empty_tree(tree):
-		return empty_tree_fn()
+#print(contains_key(2, [[], 1, 5]))
 
-	if is_leaf(tree):
-		return leaf_fn_2 == og_key
-		
+#part 3
 
-	return inner_node_fn_2(og_key, tree[1], traverse(left_subtree(tree), 
-		inner_node_fn_2, leaf_fn_2, empty_tree_fn_2),traverse(right_subtree(tree), 
-		inner_node_fn_2, leaf_fn_2, empty_tree_fn_2))
+def tree_size(tree):
+	return (traverse(tree, lambda x,y,z: y + z + 1, lambda x: 1, lambda: 0))
 
-print(contains_key(6, [6,7,8]))
+#print(tree_size([[1, 2, []], 4, [[], 5, 6]]))
 
+def tree_depth(tree):
+	return (traverse(tree, lambda x,y,z: max(y,z) + 1, lambda x: 1, lambda: 0))
+
+#print(tree_depth([1, 5, [10, 7, 14]]))
