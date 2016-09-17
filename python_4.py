@@ -163,7 +163,7 @@ square_once = repeat(lambda x: x**2 , 1)
 "4C"
 """
 "##########"
-#del 1
+#part 1
 def smooth(func):
 	dx = 0.001
 	return lambda x: (func(x-dx) + func(x) + func(x + dx))/3
@@ -176,13 +176,13 @@ import math
 #print(math.sin(0.456))
 #print(smoothed_sin(0.456))
 
-#del 2
+#part 2
 def twice_smoothed_square(x):
 	smoothed_square = smooth(lambda x: x**2)
 	res = smooth(smoothed_square)
 	res2 = smooth(res)
 	return res2(x)
-print(twice_smoothed_square(10))
+#print(twice_smoothed_square(10))
 
 def twice_smoothed_sin(x):
 	smoothed_sin = smooth(math.sin)
@@ -208,4 +208,72 @@ fivefold_smoothed_sin = repeatedly_smoothed(math.sin, 5)
 "4D"
 """
 "#########"
+
+#part 1
+
+def left_subtree(tree):
+    return tree[0]
+
+def right_subtree(tree):
+    return tree[2]
+
+def is_empty_tree(tree):
+    return isinstance(tree, list) and not tree
+
+
+def is_leaf(tree):
+    return isinstance(tree, int)
+
+
+def create_tree(left_tree, key, right_tree):
+    return [left_tree, key, right_tree]
+
+
+def inner_node_fn(key, left_value, right_value): 
+	return key + left_value
+
+def empty_tree_fn(): 
+	return 0 
+
+def leaf_fn(key): 
+	return key**2
+
+def traverse(tree, inner_node_fn, leaf_fn, empty_tree_fn):
+	if is_empty_tree(tree):
+		return empty_tree_fn()
+
+	if is_leaf(tree):
+		return leaf_fn(tree)
+
+	return inner_node_fn(tree[1], traverse(left_subtree(tree), inner_node_fn, leaf_fn, empty_tree_fn), traverse(right_subtree(tree), inner_node_fn, leaf_fn, empty_tree_fn))
+#print(traverse([6, 7, 8], inner_node_fn, leaf_fn, empty_tree_fn))
+
+#part 2
+def empty_tree_fn_2():
+	return False
+
+
+def leaf_fn_2(key):
+	return key 
+
+def inner_node_fn_2(og_key, key, left_value, right_value):
+	if key == og_key:
+		return true
+	return [left_value, key, right_value]
+
+
+def contains_key(og_key, tree):
+
+	if is_empty_tree(tree):
+		return empty_tree_fn()
+
+	if is_leaf(tree):
+		return leaf_fn_2 == og_key
+		
+
+	return inner_node_fn_2(og_key, tree[1], traverse(left_subtree(tree), 
+		inner_node_fn_2, leaf_fn_2, empty_tree_fn_2),traverse(right_subtree(tree), 
+		inner_node_fn_2, leaf_fn_2, empty_tree_fn_2))
+
+print(contains_key(6, [6,7,8]))
 
