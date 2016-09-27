@@ -206,21 +206,74 @@ def eval_program(program, **opt_arg):
 			check_typ(stmt, variables)
 
 
-def check_typ2(stmt, variables):
+def check_type2(stmt, variables):
+	print("stmt = " + str(stmt))
 
+	if len(stmt) == 1:
+		if isconstant(stmt[0]):
+			return stmt[0]
 
-	if isinstance(stmt[0], list):
-		return check_typ2(stmt[0], variables)
+		elif isvariable(stmt[0]):
+			print("variable.... =")
+			print(variables[stmt[0]])
+			return variables[stmt[0]]
+
+	elif isinstance(stmt[0], list):
+		return check_type2(stmt[0], variables)
 
 	elif isinstance(stmt[2], list):
-		return check_typ2(stmt[2], variables)
+		print("Statements:")
+		print(stmt[0])
+		print(stmt[1])
+		print(stmt[2])
+		return check_type2(stmt[2], variables)
+
+	elif isconstant(stmt[0]):
+			return stmt[0]
 
 	elif isvariable(stmt[0]):
+		print("variable.... =")
+		print(variables[stmt[0]])
+		return variables[stmt[0]]
+
+
+	
+	
+	elif isconstant(stmt[2]):
+		return stmt[2]
+
+	elif isvariable(stmt[2]):
+		return variables[stmt[2]]
+	
+	else:
+		print("ERROR Check_type2")
+
+
+def upper_binary(stmt, variables):
+	return binary2([check_type2(stmt[0], variables), stmt[1], check_type2(stmt[2], variables)])
+
+def binary2(stmt):
+	if binary_operator(stmt) == '+':
+		print("add")
+		return binary_left(stmt) + binary_right(stmt)	
+
+	elif binary_operator(stmt) == '-':
+		print("dif")	
+		return binary_left(stmt) - binary_right(stmt)
 		
 
+	elif binary_operator(stmt) == '*':
+		print("multi")
+		return binary_left(stmt) * binary_right(stmt)
 
+	elif binary_operator(stmt) == '/':
+		print("div")
+		return binary_left(stmt)/binary_right(stmt)
 
-
+	else:
+		print("ERROR no binary2 operator")
+		print(stmt)
+		print("")
 		
 def check_typ(stmt, variables):
 	
@@ -249,14 +302,7 @@ def check_typ(stmt, variables):
 
 		elif isbinary(stmt):
 			print("binary: " + str(stmt))
-			if isinstance(binary_left(stmt), list):
-				return binary([binary(binary_left(stmt), variables), binary_operator(stmt), binary_right(stmt)], variables) 
-
-			if isinstance(binary_right(stmt), list):
-				return binary([binary_left(stmt), binary_operator(stmt), check_typ(binary_right(stmt), variables)], variables)
-
-			else: 
-				return binary(stmt, variables)
+			return upper_binary(stmt, variables)
 
 			
 		else:
@@ -362,8 +408,8 @@ calc1 = ['calc', ['set', 'a', 5], ['read', 'p1'] ,['set', 'b', 7], ['print', 'p1
 
 calc2 = ['calc', ['set', 'x', 7],
                  ['set', 'y', 12],
-                 ['set', 'z', [ 'x', '+', ['y', '+', 2]]],
+                 ['set', 'z', [ 'x', '-', ['y', '*', 2]]],
                     ['print', 'z']]
 
 
-eval_program(calc3)
+eval_program(calc2)
