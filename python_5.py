@@ -201,32 +201,75 @@ import copy
 def eval_program(program, **opt_arg):
 
 	variables = {}
+	if isprogram(program):
+		for stmt in program_statements(program):
+			check_typ(stmt, variables)
 
-	for stmt in program[1:]:
-		print(stmt)
+
+def check_typ2(stmt, variables):
+
+
+	if isinstance(stmt[0], list):
+		return check_typ2(stmt[0], variables)
+
+	elif isinstance(stmt[2], list):
+		return check_typ2(stmt[2], variables)
+
+	elif isvariable(stmt[0]):
+		
+
+
+
+
+		
+def check_typ(stmt, variables):
+	
+		print("")
+		print("stmt: " + str(stmt))
 
 		if isassignment(stmt):
+			print("assignment: " + str(stmt))
+			if isinstance(assignment_expression(stmt), list):
+	
+				assignment(['set', assignment_variable(stmt), check_typ(assignment_expression(stmt), variables)], variables)
+
+			else: 
+				assignment(stmt, variables)
 			
-			assignment(stmt, variables)
-			print("varibales: " + str(variables))
 			
 		elif isinput(stmt):
+			print("input: " + str(stmt))
 			input_func(stmt, variables)
-			print("input: " + str(variables))
+						
 		
 		elif isoutput(stmt):
+			print("output: " + str(stmt))
 			output(stmt, variables)
-			print("output: " + output(stmt, variables))
+			
 
+		elif isbinary(stmt):
+			print("binary: " + str(stmt))
+			if isinstance(binary_left(stmt), list):
+				return binary([binary(binary_left(stmt), variables), binary_operator(stmt), binary_right(stmt)], variables) 
 
-		
+			if isinstance(binary_right(stmt), list):
+				return binary([binary_left(stmt), binary_operator(stmt), check_typ(binary_right(stmt), variables)], variables)
+
+			else: 
+				return binary(stmt, variables)
+
+			
 		else:
 			print("WRONG")
 
 
+
 def assignment(stmt, variables):
 	#print("assignment stmt: " + str(stmt))
+	#print("assignment: ")
+	#print(assignment_expression(stmt))
 	variables[assignment_variable(stmt)] = assignment_expression(stmt)
+	return assignment_expression(stmt)
 	
 
 def output(stmt, variables):
@@ -234,10 +277,93 @@ def output(stmt, variables):
 
 def input_func(stmt, variables):
 	userInput = input("Enter value for " + str(stmt[1]) + ": ")
-	#print("userInput = " + str(userInput))
-	#print([stmt[1], userInput])
 	assignment(['set', stmt[1], userInput], variables)
 
+def binary(stmt, variables):
+
+	if binary_operator(stmt) == '+':
+		print("add")
+		
+		if isvariable(binary_left(stmt)):
+
+			if isvariable(binary_right(stmt)):
+				return variables[binary_left] + variables[binary_right]
+			elif isconstant(binary_right(stmt)):
+				return variables[binary_left(stmt)] + binary_right(stmt)
+
+		elif isconstant(binary_left(stmt)):
+
+			if isconstant(binary_right(stmt)):
+				return binary_left(stmt) + binary_right(stmt)
+			elif isvariable(binary_right(stmt)):
+				return variables[binary_right(stmt)] + binary_left(stmt)
+		else:
+			print("ERROR add")
+
+
+
+	if binary_operator(stmt) == '-':
+		print("dif")
+		if isvariable(binary_left(stmt)):
+
+			if isvariable(binary_right(stmt)):
+				print("binaryLeft:")
+				print(variables[binary_left(stmt)])
+				print("binaryRight")
+				print(binary_right(stmt))
+				return variables[binary_left(stmt)] - variables[binary_right(stmt)]
+			elif isconstant(binary_right(stmt)):
+				return variables[binary_left(stmt)] - binary_right(stmt)
+
+		elif isconstant(binary_left(stmt)):
+
+			if isconstant(binary_right(stmt)):
+				return binary_left(stmt) - binary_right(stmt)
+			elif isvariable(binary_right(stmt)):
+				return variables[binary_right(stmt)] - binary_left(stmt)
+		else:
+			print("ERROR dif")
+
+
+	if binary_operator(stmt) == '*':
+		print("multi")
+		if isvariable(binary_left(stmt)):
+
+			if isvariable(binary_right(stmt)):
+				return variables[binary_left(stmt)] * variables[binary_right(stmt)]
+			elif isconstant(binary_right(stmt)):
+				return variables[binary_left(stmt)] * binary_right(stmt)
+
+		elif isconstant(binary_left(stmt)):
+
+			if isconstant(binary_right(stmt)):
+				return binary_left(stmt) * binary_right(stmt)
+			elif isvariable(binary_right(stmt)):
+				return variables[binary_right(stmt)] * binary_left(stmt)
+		else:
+			print("ERROR multi")
+
+
+	if binary_operator(stmt) == '/':
+		print("div")
+
+	else:
+		print("ERROR no binary operator")
+		print(stmt)
+		print("")
+
+calc3 = ['calc', ['read', 'p1'],
+                  ['set', 'p2', 47],
+                  ['set', 'p3', 179],
+                  ['set', 'result', ['p3', '-', ['p1', '*', 'p2']]],
+                  ['print', 'result']]
 
 calc1 = ['calc', ['set', 'a', 5], ['read', 'p1'] ,['set', 'b', 7], ['print', 'p1']]
-eval_program(calc1)
+
+calc2 = ['calc', ['set', 'x', 7],
+                 ['set', 'y', 12],
+                 ['set', 'z', [ 'x', '+', ['y', '+', 2]]],
+                    ['print', 'z']]
+
+
+eval_program(calc3)
