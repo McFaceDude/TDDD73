@@ -198,16 +198,18 @@ def isconstant(p):
 
 import copy
 
-def eval_program(program, **opt_arg):
-
+def eval_program(program, *opt_arg):
 	variables = {}
+	
+	if opt_arg:
+		variables = copy.deepcopy(opt_arg[0])
+
 	if isprogram(program):
 		for stmt in program_statements(program):
-			check_typ(stmt, variables)
-
+			finalOutput = check_typ(stmt, variables)
+		return(variables)
 
 def binary_check(stmt, variables):
-	print("stmt = " + str(stmt))
 
 	if isconstant(stmt):
 		return stmt
@@ -217,18 +219,17 @@ def binary_check(stmt, variables):
 		return variables[stmt]
 
 	if isinstance(stmt, list):
-		return binary2(binary_check(stmt[0], variables), stmt[1], binary_check(stmt[2], variables))
+		return binary(binary_check(stmt[0], variables), stmt[1], binary_check(stmt[2], variables))
 	
 	print("ERROR binary_check")
 
-
-def binary2(left, operator, right):
+def binary(left, operator, right):
 	if operator == '+':
 		print("add")
 		return left + right	
 
 	if operator == '-':
-		print("dif" + str(left) +" - " +str(right))	
+		print("dif " + str(left) +" - " +str(right))	
 		return left - right
 		
 
@@ -239,7 +240,6 @@ def binary2(left, operator, right):
 	if operator == '/':
 		print("div")
 		return left / rightt
-
 	
 	print("ERROR no binary 2 operator")
 	print(stmt)
@@ -253,32 +253,22 @@ def check_typ(stmt, variables):
 		if isassignment(stmt):
 			print("assignment: " + str(stmt))
 			if isinstance(assignment_expression(stmt), list):
-	
 				assignment(['set', assignment_variable(stmt), check_typ(assignment_expression(stmt), variables)], variables)
-
 			else: 
-				assignment(stmt, variables)
+				assignment(stmt, variables)	
 			
-			
-		elif isinput(stmt):
+		if isinput(stmt):
 			print("input: " + str(stmt))
 			input_func(stmt, variables)
 						
-		
-		elif isoutput(stmt):
+		if isoutput(stmt):
 			print("output: " + str(stmt))
-			output(stmt, variables)
+			print("------------")
+			return output(stmt, variables)
 			
-
-		elif isbinary(stmt):
+		if isbinary(stmt):
 			print("binary: " + str(stmt))
 			return binary_check(stmt, variables)
-
-			
-		else:
-			print("WRONG")
-
-
 
 def assignment(stmt, variables):
 	variables[assignment_variable(stmt)] = assignment_expression(stmt)
@@ -286,7 +276,7 @@ def assignment(stmt, variables):
 	
 
 def output(stmt, variables):
-	print (str(output_variable(stmt)) + " = " + str(variables[output_variable(stmt)]))
+	print  (str(output_variable(stmt)) + " = " + str(variables[output_variable(stmt)]))
 
 def input_func(stmt, variables):
 	userInput = input("Enter value for " + str(stmt[1]) + ": ")
@@ -300,7 +290,7 @@ calc3 = ['calc', ['read', 'p1'],
                   ['set', 'result', [['p1', '*', 'p2'], '-', 'p3']],
                   ['print', 'result']]
 
-calc1 = ['calc', ['set', 'a', 5], ['read', 'p1'] ,['set', 'b', 7], ['print', 'p1']]
+calc1 = ['calc', ['set', 'a', 5], ['print', 'a']]
 
 calc2 = ['calc', ['set', 'x', 7],
                   ['set', 'y', 12],
@@ -308,4 +298,5 @@ calc2 = ['calc', ['set', 'x', 7],
                   ['print', 'z']]
 
 
-eval_program(calc3)
+new_table = eval_program(calc2)
+
