@@ -207,6 +207,7 @@ def eval_program(program, *opt_arg):
 	if isprogram(program):
 		for stmt in program_statements(program):
 			finalOutput = check_typ(stmt, variables)
+		print(variables)
 		return(variables)
 
 def check_typ(stmt, variables):
@@ -217,30 +218,35 @@ def check_typ(stmt, variables):
 		if isassignment(stmt):
 			print("assignment: " + str(stmt))
 			if isinstance(assignment_expression(stmt), list):
-				assignment(['set', assignment_variable(stmt), check_typ(assignment_expression(stmt), variables)], variables)
+				#print(check_typ(assignment_expression(stmt), variables))
+				assignment(['set', assignment_variable(stmt), str(check_typ(assignment_expression(stmt), variables))], variables)
 			else: 
 				assignment(stmt, variables)	
 			
 		if isinput(stmt):
-			print("input: " + str(stmt))
+			#print("input: " + str(stmt))
 			input_func(stmt, variables)
 						
 		if isoutput(stmt):
-			print("output: " + str(stmt))
-			print("------------")
+			#print("output: " + str(stmt))
+			#print("------------")
 			return output(stmt, variables)
 			
 		if isbinary(stmt):
-			print("binary: " + str(stmt))
+			#print("binary: " + str(stmt))
 			return binary_check(stmt, variables)
 
 		if iscondition(stmt):
-			print("condition: " + str(stmt))
+			#print("condition: " + str(stmt))
 			return binary_check(stmt, variables)
+			#TODO merge with isbinary!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		if isselection(stmt):
-			if hasfalse(stmt):
-				print("Selsection, has false!")
 			return selection(stmt, variables)
+		
+		if isrepetition(stmt):
+			print("repetition")
+			repetition(stmt, variables) 
+
 
 def binary_check(stmt, variables):
 
@@ -258,37 +264,45 @@ def binary_check(stmt, variables):
 
 def binary(left, operator, right):
 	if operator == '+':
-		print("add")
-		return left + right	
+		#print(int(left) + " + " + int(right))
+		return int(left) + int(right)	
 
 	if operator == '-':
-		print("dif " + str(left) +" - " +str(right))	
-		return left - right
+		#print("dif " + str(left) +" - " +str(right))	
+		return int(left) - int(right)
 		
 
 	if operator == '*':
-		print("multi")
+		#print("multi")
 		return int(left) * int(right)
 
 	if operator == '/':
-		print("div")
-		return left / rightt
+		#print("div")
+		return int(left) / (right)
 
 	if operator == '<':
 		#print("<")
 		return int(left) < int(right)
 
 	if operator == '>':
-		#print(">")
+		#print(">" + int(left) + ">" + int(right))
 		return int(left) > int(right)
 
 	if operator == '=':
-		print("equal")
+		#print("equal")
 		return left == right
 	
 	print("ERROR no binary operator")
 	print(stmt)
 	print("")
+
+def repetition(stmt, variables):
+	#print(repetition_condition(stmt))
+	while binary_check(repetition_condition(stmt), variables):
+		for statement in repetition_statements(stmt):
+				check_typ(statement, variables)
+
+	return variables
 
 def selection(stmt, variables):
 	if binary_check(selection_condition(stmt), variables):
@@ -297,7 +311,7 @@ def selection(stmt, variables):
 		check_typ(selection_false(stmt), variables)
 
 def assignment(stmt, variables):
-	variables[assignment_variable(stmt)] = assignment_expression(stmt)
+	variables[assignment_variable(stmt)] = int(assignment_expression(stmt))
 	return assignment_expression(stmt)
 	
 
@@ -318,9 +332,9 @@ calc3 = ['calc', ['read', 'p1'],
 
 calc1 = ['calc', ['set', 'a', 5], ['print', 'a']]
 
-calc2 = ['calc', ['set', 'x', 7],
-                  ['set', 'y', 12],
-                  ['set', 'z', ['x', '+', 'y']],
+calc2 = ['calc', ['set', 'x', 13],
+                  ['set', 'y', 3],
+                  ['set', 'z', ['x', '/', 'y']],
                   ['print', 'z']]
 
 calc4 = ['calc',
@@ -331,7 +345,15 @@ calc4 = ['calc',
  
                 ['if', ['x', '>', 0],
                  	['print', 'pos'], ['print', 'nonpos']]]
+
+calc5 = ['calc', ['read', 'n'],
+                 ['set', 'sum', 0],
+                 ['while', ['n', '>', 0],
+                      ['set', 'sum', ['sum', '+', 'n']],
+                      ['set', 'n', ['n', '-', 1]]],
+                 ['print', 'sum']]
+
    
-   
-eval_program(calc4)
+newTable = eval_program(calc5)
+print(newTable)
 
