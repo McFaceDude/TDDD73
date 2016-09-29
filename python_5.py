@@ -207,7 +207,7 @@ def eval_program(program, *opt_arg):
 	if isprogram(program):
 		for stmt in program_statements(program):
 			finalOutput = check_typ(stmt, variables)
-		print(variables)
+		#print(variables)
 		return(variables)
 
 def check_typ(stmt, variables):
@@ -216,7 +216,7 @@ def check_typ(stmt, variables):
 		#print("stmt: " + str(stmt))
 
 		if isassignment(stmt):
-			print("assignment: " + str(stmt))
+			#print("assignment: " + str(stmt))
 			if isinstance(assignment_expression(stmt), list):
 				#print(check_typ(assignment_expression(stmt), variables))
 				assignment(['set', assignment_variable(stmt), str(check_typ(assignment_expression(stmt), variables))], variables)
@@ -244,7 +244,7 @@ def check_typ(stmt, variables):
 			return selection(stmt, variables)
 		
 		if isrepetition(stmt):
-			print("repetition")
+			#print("repetition")
 			repetition(stmt, variables) 
 
 
@@ -354,6 +354,6 @@ calc5 = ['calc', ['read', 'n'],
                  ['print', 'sum']]
 
    
-newTable = eval_program(calc5)
-print(newTable)
+#newTable = eval_program(calc5)
+#print(newTable)
 
