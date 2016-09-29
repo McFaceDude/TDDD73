@@ -34,13 +34,13 @@ OUTPUT     ::= [ 'print', VARIABLE ]
 
 EXPRESSION ::= CONSTANT
                | VARIABLE
-               | BINARYEXPR
+               | expressionEXPR
 			   
-BINARYEXPR ::= [ EXPRESSION, BINARYOPER, EXPRESSION ]
+expressionEXPR ::= [ EXPRESSION, expressionOPER, EXPRESSION ]
 			   
 CONDITION  ::= [ EXPRESSION, CONDOPER, EXPRESSION ]
 
-BINARYOPER ::= '+' | '-' | '*' | '/'
+expressionOPER ::= '+' | '-' | '*' | '/'
 
 CONDOPER   ::= '<' | '>' | '='
 			  
@@ -142,20 +142,20 @@ def output_variable(p):
 # ----- EXPRESSION -----
 
 # No functions for expressions in general. Instead, see the differenct
-# types of expressions: constants, variables and binary expressions.
+# types of expressions: constants, variables and expression expressions.
 
-# ----- BINARYEXPR -----
+# ----- expressionEXPR -----
 
-def isbinary(p):
-    return isinstance(p, list) and len(p) == 3 and isbinaryoper(p[1])
+def isexpression(p):
+    return isinstance(p, list) and len(p) == 3 and isexpressionoper(p[1])
 
-def binary_operator(p):
+def expression_operator(p):
     return p[1]
 
-def binary_left(p):
+def expression_left(p):
     return p[0]
 
-def binary_right(p):
+def expression_right(p):
     return p[2]
 
 # ----- CONDITION -----
@@ -172,9 +172,9 @@ def condition_left(p):
 def condition_right(p):
     return p[2]
 
-# ----- BINARYOPER -----
+# ----- expressionOPER -----
 
-def isbinaryoper(p):
+def isexpressionoper(p):
     return p in ['+', '-', '*', '/']
 
 # ----- CONDOPER -----
@@ -199,7 +199,6 @@ def isconstant(p):
 import copy
 
 def eval_program(program, *opt_arg):
-	
 	variables = {}
 	
 	if opt_arg:
@@ -207,14 +206,13 @@ def eval_program(program, *opt_arg):
 
 	if isprogram(program):
 		for stmt in program_statements(program):
-			finalOutput = check_typ(stmt, variables)
+			check_func(stmt, variables)
 		return(variables)
 
-def check_typ(stmt, variables):
-
+def check_func(stmt, variables):
 		if isassignment(stmt):
 			if isinstance(assignment_expression(stmt), list):
-				assignment(['set', assignment_variable(stmt), str(check_typ(assignment_expression(stmt), variables))], variables)
+				assignment(['set', assignment_variable(stmt), str(check_func(assignment_expression(stmt), variables))], variables)
 			else: 
 				assignment(stmt, variables)	
 			
@@ -224,11 +222,8 @@ def check_typ(stmt, variables):
 		if isoutput(stmt):
 			return output(stmt, variables)
 			
-		if isbinary(stmt):
-			return binary_check(stmt, variables)
-
-		if iscondition(stmt):
-			return binary_check(stmt, variables)
+		if isexpression(stmt) or iscondition(stmt):
+			return interate_expression(stmt, variables)
 
 		if isselection(stmt):
 			return selection(stmt, variables)
@@ -236,8 +231,7 @@ def check_typ(stmt, variables):
 		if isrepetition(stmt):
 			repetition(stmt, variables) 
 
-def binary_check(stmt, variables):
-
+def interate_expression(stmt, variables):
 	if isconstant(stmt):
 		return stmt
 
@@ -245,10 +239,9 @@ def binary_check(stmt, variables):
 		return variables[stmt]
 
 	if isinstance(stmt, list):
-		return binary(binary_check(stmt[0], variables), stmt[1], binary_check(stmt[2], variables))
+		return expression(interate_expression(stmt[0], variables), stmt[1], interate_expression(stmt[2], variables))
 
-def binary(left, operator, right):
-
+def expression(left, operator, right):
 	if operator == '+':
 		return int(left) + int(right)	
 
@@ -271,31 +264,26 @@ def binary(left, operator, right):
 		return left == right
 
 def repetition(stmt, variables):
-
-	while binary_check(repetition_condition(stmt), variables):
+	while interate_expression(repetition_condition(stmt), variables):
 		for statement in repetition_statements(stmt):
-				check_typ(statement, variables)
+				check_func(statement, variables)
 	return variables
 
 def selection(stmt, variables):
-
-	if binary_check(selection_condition(stmt), variables):
-		check_typ(selection_true(stmt), variables)
+	if interate_expression(selection_condition(stmt), variables):
+		check_func(selection_true(stmt), variables)
 	elif hasfalse(stmt):
-		check_typ(selection_false(stmt), variables)
+		check_func(selection_false(stmt), variables)
 
 def assignment(stmt, variables):
-
 	variables[assignment_variable(stmt)] = int(assignment_expression(stmt))
 	return assignment_expression(stmt)
 	
 
 def output(stmt, variables):
-
 	print  (str(output_variable(stmt)) + " = " + str(variables[output_variable(stmt)]))
 
 def input_func(stmt, variables):
-
 	userInput = input("Enter value for " + str(stmt[1]) + ": ")
 	assignment(['set', stmt[1], userInput], variables)
 
