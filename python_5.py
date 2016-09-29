@@ -199,6 +199,7 @@ def isconstant(p):
 import copy
 
 def eval_program(program, *opt_arg):
+	
 	variables = {}
 	
 	if opt_arg:
@@ -207,46 +208,33 @@ def eval_program(program, *opt_arg):
 	if isprogram(program):
 		for stmt in program_statements(program):
 			finalOutput = check_typ(stmt, variables)
-		#print(variables)
 		return(variables)
 
 def check_typ(stmt, variables):
-	
-		#print("")
-		#print("stmt: " + str(stmt))
 
 		if isassignment(stmt):
-			#print("assignment: " + str(stmt))
 			if isinstance(assignment_expression(stmt), list):
-				#print(check_typ(assignment_expression(stmt), variables))
 				assignment(['set', assignment_variable(stmt), str(check_typ(assignment_expression(stmt), variables))], variables)
 			else: 
 				assignment(stmt, variables)	
 			
 		if isinput(stmt):
-			#print("input: " + str(stmt))
 			input_func(stmt, variables)
 						
 		if isoutput(stmt):
-			#print("output: " + str(stmt))
-			#print("------------")
 			return output(stmt, variables)
 			
 		if isbinary(stmt):
-			#print("binary: " + str(stmt))
 			return binary_check(stmt, variables)
 
 		if iscondition(stmt):
-			#print("condition: " + str(stmt))
 			return binary_check(stmt, variables)
-			#TODO merge with isbinary!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 		if isselection(stmt):
 			return selection(stmt, variables)
 		
 		if isrepetition(stmt):
-			#print("repetition")
 			repetition(stmt, variables) 
-
 
 def binary_check(stmt, variables):
 
@@ -254,106 +242,83 @@ def binary_check(stmt, variables):
 		return stmt
 
 	if isvariable(stmt):
-		#print("varible = " + str(variables[stmt]))
 		return variables[stmt]
 
 	if isinstance(stmt, list):
 		return binary(binary_check(stmt[0], variables), stmt[1], binary_check(stmt[2], variables))
-	
-	print("ERROR binary_check")
 
 def binary(left, operator, right):
+
 	if operator == '+':
-		#print(int(left) + " + " + int(right))
 		return int(left) + int(right)	
 
 	if operator == '-':
-		#print("dif " + str(left) +" - " +str(right))	
 		return int(left) - int(right)
-		
 
 	if operator == '*':
-		#print("multi")
 		return int(left) * int(right)
 
 	if operator == '/':
-		#print("div")
-		return int(left) / (right)
+		return int(left) // int(right)
 
 	if operator == '<':
-		#print("<")
 		return int(left) < int(right)
 
 	if operator == '>':
-		#print(">" + int(left) + ">" + int(right))
 		return int(left) > int(right)
 
 	if operator == '=':
-		#print("equal")
 		return left == right
-	
-	print("ERROR no binary operator")
-	print(stmt)
-	print("")
 
 def repetition(stmt, variables):
-	#print(repetition_condition(stmt))
+
 	while binary_check(repetition_condition(stmt), variables):
 		for statement in repetition_statements(stmt):
 				check_typ(statement, variables)
-
 	return variables
 
 def selection(stmt, variables):
+
 	if binary_check(selection_condition(stmt), variables):
 		check_typ(selection_true(stmt), variables)
 	elif hasfalse(stmt):
 		check_typ(selection_false(stmt), variables)
 
 def assignment(stmt, variables):
+
 	variables[assignment_variable(stmt)] = int(assignment_expression(stmt))
 	return assignment_expression(stmt)
 	
 
 def output(stmt, variables):
+
 	print  (str(output_variable(stmt)) + " = " + str(variables[output_variable(stmt)]))
 
 def input_func(stmt, variables):
+
 	userInput = input("Enter value for " + str(stmt[1]) + ": ")
 	assignment(['set', stmt[1], userInput], variables)
 
+#return the factorial for n
+faculty = ['calc', ["read", "n"],
+					["set", "res", 1],
+					["while", ["n", ">", 1],
+						["set", "res", ["res", "*", "n"]],
+						["set", "n", ["n", "-", 1]]],
+					["print", "res"]]
 
-
-calc3 = ['calc', ['read', 'p1'],
-                  ['set', 'p2', 47],
-                  ['set', 'p3', 179],
-                  ['set', 'result', [['p1', '*', 'p2'], '-', 'p3']],
-                  ['print', 'result']]
-
-calc1 = ['calc', ['set', 'a', 5], ['print', 'a']]
-
-calc2 = ['calc', ['set', 'x', 13],
-                  ['set', 'y', 3],
-                  ['set', 'z', ['x', '/', 'y']],
-                  ['print', 'z']]
-
-calc4 = ['calc',
-                ['read', 'x'],
-                ['set', 'zero', 0],
-                ['set', 'pos', 1],
-                ['set', 'nonpos', -1],
- 
-                ['if', ['x', '>', 0],
-                 	['print', 'pos'], ['print', 'nonpos']]]
-
-calc5 = ['calc', ['read', 'n'],
-                 ['set', 'sum', 0],
-                 ['while', ['n', '>', 0],
-                      ['set', 'sum', ['sum', '+', 'n']],
-                      ['set', 'n', ['n', '-', 1]]],
-                 ['print', 'sum']]
-
+#if x < 4 then return 3
+#else return x
+math = ["calc", ["read", "x"],  
+					["if", ["x", "=", 3],
+						["set", "x", 2]],
+					["if", ["x", "<", 3],
+						["set", "x",[12, "/", [7, "-", [1, "+", 2]]]],
+						["print", "x"]],
+					["if", ["x", "=", 3], 
+						["print", "x"]]]
    
-#newTable = eval_program(calc5)
-#print(newTable)
+#eval_program(math)
+
+
 
