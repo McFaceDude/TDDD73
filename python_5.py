@@ -209,13 +209,46 @@ def eval_program(program, *opt_arg):
 			finalOutput = check_typ(stmt, variables)
 		return(variables)
 
+def check_typ(stmt, variables):
+	
+		#print("")
+		#print("stmt: " + str(stmt))
+
+		if isassignment(stmt):
+			print("assignment: " + str(stmt))
+			if isinstance(assignment_expression(stmt), list):
+				assignment(['set', assignment_variable(stmt), check_typ(assignment_expression(stmt), variables)], variables)
+			else: 
+				assignment(stmt, variables)	
+			
+		if isinput(stmt):
+			print("input: " + str(stmt))
+			input_func(stmt, variables)
+						
+		if isoutput(stmt):
+			print("output: " + str(stmt))
+			print("------------")
+			return output(stmt, variables)
+			
+		if isbinary(stmt):
+			print("binary: " + str(stmt))
+			return binary_check(stmt, variables)
+
+		if iscondition(stmt):
+			print("condition: " + str(stmt))
+			return binary_check(stmt, variables)
+		if isselection(stmt):
+			if hasfalse(stmt):
+				print("Selsection, has false!")
+			return selection(stmt, variables)
+
 def binary_check(stmt, variables):
 
 	if isconstant(stmt):
 		return stmt
 
 	if isvariable(stmt):
-		print("varible = " + str(variables[stmt]))
+		#print("varible = " + str(variables[stmt]))
 		return variables[stmt]
 
 	if isinstance(stmt, list):
@@ -240,35 +273,28 @@ def binary(left, operator, right):
 	if operator == '/':
 		print("div")
 		return left / rightt
+
+	if operator == '<':
+		#print("<")
+		return int(left) < int(right)
+
+	if operator == '>':
+		#print(">")
+		return int(left) > int(right)
+
+	if operator == '=':
+		print("equal")
+		return left == right
 	
-	print("ERROR no binary 2 operator")
+	print("ERROR no binary operator")
 	print(stmt)
 	print("")
-		
-def check_typ(stmt, variables):
-	
-		print("")
-		print("stmt: " + str(stmt))
 
-		if isassignment(stmt):
-			print("assignment: " + str(stmt))
-			if isinstance(assignment_expression(stmt), list):
-				assignment(['set', assignment_variable(stmt), check_typ(assignment_expression(stmt), variables)], variables)
-			else: 
-				assignment(stmt, variables)	
-			
-		if isinput(stmt):
-			print("input: " + str(stmt))
-			input_func(stmt, variables)
-						
-		if isoutput(stmt):
-			print("output: " + str(stmt))
-			print("------------")
-			return output(stmt, variables)
-			
-		if isbinary(stmt):
-			print("binary: " + str(stmt))
-			return binary_check(stmt, variables)
+def selection(stmt, variables):
+	if binary_check(selection_condition(stmt), variables):
+		check_typ(selection_true(stmt), variables)
+	elif hasfalse(stmt):
+		check_typ(selection_false(stmt), variables)
 
 def assignment(stmt, variables):
 	variables[assignment_variable(stmt)] = assignment_expression(stmt)
@@ -297,6 +323,15 @@ calc2 = ['calc', ['set', 'x', 7],
                   ['set', 'z', ['x', '+', 'y']],
                   ['print', 'z']]
 
-
-new_table = eval_program(calc2)
+calc4 = ['calc',
+                ['read', 'x'],
+                ['set', 'zero', 0],
+                ['set', 'pos', 1],
+                ['set', 'nonpos', -1],
+ 
+                ['if', ['x', '>', 0],
+                 	['print', 'pos'], ['print', 'nonpos']]]
+   
+   
+eval_program(calc4)
 
