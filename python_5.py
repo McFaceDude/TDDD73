@@ -223,7 +223,7 @@ def check_func(stmt, variables):
 			return output(stmt, variables)
 			
 		if isexpression(stmt) or iscondition(stmt):
-			return interate_expression(stmt, variables)
+			return iterate_expression(stmt, variables)
 
 		if isselection(stmt):
 			return selection(stmt, variables)
@@ -231,7 +231,7 @@ def check_func(stmt, variables):
 		if isrepetition(stmt):
 			repetition(stmt, variables) 
 
-def interate_expression(stmt, variables):
+def iterate_expression(stmt, variables):
 	if isconstant(stmt):
 		return stmt
 
@@ -239,7 +239,7 @@ def interate_expression(stmt, variables):
 		return variables[stmt]
 
 	if isinstance(stmt, list):
-		return expression(interate_expression(stmt[0], variables), stmt[1], interate_expression(stmt[2], variables))
+		return expression(iterate_expression(stmt[0], variables), stmt[1], iterate_expression(stmt[2], variables))
 
 def expression(left, operator, right):
 	if operator == '+':
@@ -264,13 +264,13 @@ def expression(left, operator, right):
 		return left == right
 
 def repetition(stmt, variables):
-	while interate_expression(repetition_condition(stmt), variables):
+	while iterate_expression(repetition_condition(stmt), variables):
 		for statement in repetition_statements(stmt):
 				check_func(statement, variables)
 	return variables
 
 def selection(stmt, variables):
-	if interate_expression(selection_condition(stmt), variables):
+	if iterate_expression(selection_condition(stmt), variables):
 		check_func(selection_true(stmt), variables)
 	elif hasfalse(stmt):
 		check_func(selection_false(stmt), variables)
