@@ -1,102 +1,14 @@
 #lab 6
 #6A
 import unittest
-"""
+
+
 def match(seq, pattern):
-
-
-	print("")
-	
-	Returns whether given sequence matches the given pattern
 	"""
+	Returns whether given sequence matches the given pattern
 	"""
 	if not pattern:
 		return not seq
-
-	elif not isinstance(pattern[0], list): #then it the whole part must be a "--"
-		print("notList = " + str(pattern[0]))
-		
-		if pattern[0] == '--':
-			if match(seq[1:], pattern[1:]):
-				return True
-			else:
-				return False
-				
-	elif not seq:
-		print("not seq")
-		return False
-
-	elif not isinstance(pattern[0][0], list):
-
-		if pattern[0][0] == "--":
-			print("pattern = --")
-			if match(seq[1:], pattern[0:][1:]):
-				return True
-
-		if pattern[0][0] == '&':
-			print("& match " + str(seq[0][0]))
-			print("return: " + str([seq[0][1:]] + seq[1:]))
-			return match([seq[0][1:]] + seq[1:], [pattern[0][1:]] + pattern[1:])
-
-		elif seq[0][0] == pattern[0][0]:
-			print("perfect match " + str(seq[0][0]))
-			print("return " + str([seq[0][1:]] + seq[1:]))# + " " + str(pattern[0][1])))
-			return match([seq[0][1:]] + seq[1:], [pattern[0][1:]] + pattern[1:])
-
-
-	elif isinstance(pattern[0][0], list):
-		print("is List: " + str(seq[0][0]))
-
-		
-		if pattern[0][0][0] == "--":
-			print("-- match: "+ str(seq) + " pattern: " + str( [[pattern[0][0][1:]]] + pattern[1:]))
-			if match(seq, [[pattern[0][0][1:]]] + pattern[1:]):
-				print("True!")
-				return True
-			
-			elif len(seq[0][0]) == 0:
-				print("-- match, seq empty")
-				return match(seq[1:], pattern)
-				
-
-			else:
-				print("-- else")
-				return match([[seq[0][0][1:]]] + seq[1:], pattern)
-
-		
-		
-		elif len(pattern[0][0]) == 0:
-			print("not match, to long,  return False")
-			return False
-
-		elif pattern[0][0][0] == '&':
-			print("& match: " + str(seq[0][0][0]))
-			print("return seq: " + str([[seq[0][0][1:]]] + seq[1:]) + " pattern: " + str([[pattern[0][0][1:]]] + pattern[1:]))
-			
-
-			return match([[seq[0][0][1:]]] + seq[1:], [[pattern[0][0][1:]]] + pattern[1:])
-		
-		elif seq[0][0][0] == pattern[0][0][0]:
-			print("perfect match: " + str(seq[0][0][0]))
-			
-			
-			if len(seq[0][0]) <= 1:
-				print("return seq: " + str(seq[1:]) + " pattern: " + str(pattern[1:]))
-				return match(seq[1:], pattern[1:])
-			else:
-				print("return seq: " + str([[seq[0][0][1:]]] + seq[1:]) + " pattern: " + str([[pattern[0][0][1:]]] + pattern[1:]))
-				return match([[seq[0][0][1:]]] + seq[1:], [[pattern[0][0][1:]]] + pattern[1:])
-		else:
-			print("no match, wrong name, return False")
-			return False
-		
-	
-	else:
-		print("else")
-		return False
-	"""
-
-"""
 	elif pattern[0] == '--':
 		if match(seq, pattern[1:]):
 			return True
@@ -104,41 +16,54 @@ def match(seq, pattern):
 			return False
 		else:
 			return match(seq[1:], pattern)
-
 	elif not seq: 
 		return False 
-
 	elif pattern[0] == '&':
 		return match(seq[1:], pattern[1:])
-
 	elif seq[0] == pattern[0]:
 		return match(seq[1:], pattern[1:])
-
 	else:
-		#print(seq[0])
 		return False
-"""
 
 def search(pattern, db):
 	#print(pattern[0])
 
 	res = []
-	if not pattern: #base case
+	if not pattern: #no pattern to match
 		return []
 
 	for bookIndex, book in enumerate(db):
-	
-		if match(book, pattern):
+		matchCounter = 0
+
+		for partCount, bookPart in enumerate(book):
+
+			if pattern[partCount] == "--":
+				print("partMatch1!")
+				matchCounter += 1
+
+			elif partCount == 2: 	#If we are on the year part of the database, we have no 
+									#lists in lists and can match bookPart(["år", "something"]) directly.
+
+				if match(bookPart, pattern[partCount]):
+					print("partMatch2!")
+					matchCounter += 1
+			
+			else:
+			
+				if match(bookPart[1], pattern[partCount][1]):
+					print("match bookPart: "+ str(bookPart[1]))
+					print("with pattern: " + str(pattern[partCount][1]))
+					print("partMatch3!")
+					matchCounter += 1
+				
+		if matchCounter == 3:
+			print("BookMatch!")	
 			res.append(book)
-			print("res: " + str(res))
+		else:
+			print("no bookMatch!")
+		
 	return res
 	
-def match(seq, pattern):
-
-	if isinstance(seq, str):
-		if seq == pattern:
-
-
 """
 class matchTests(unittest.TestCase):
 	
@@ -170,7 +95,7 @@ db = [[['författare', ['john', 'zelle']],
 #res = [item for sublist in testList for item in sublist]
 #print("res" + str(res))
 
-print(search([['författare', ['&', 'zelle']], ["titel", ["--", "python", "--"]], '--'], db))
+print(search([['författare', ['&', 'zelle']], ['titel', ['--', 'python', '--']], ['år', '&']], db))
 """
 print(flatten([['författare', ['john', 'zelle']], 
 	   ['titel', ['python', 'programming', 'an', 'introduction', 'to', 'computer', 'science']], 
