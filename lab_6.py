@@ -1,12 +1,12 @@
-#lab 6
+#lab 6 samli627
+##########
 #6A
+##########
 import unittest
 
 
 def match(seq, pattern):
-	"""
-	Returns whether given sequence matches the given pattern
-	"""
+	
 	if not pattern:
 		return not seq
 	elif pattern[0] == '--':
@@ -26,50 +26,32 @@ def match(seq, pattern):
 		return False
 
 def search(pattern, db):
-	#print(pattern[0])
 
 	res = []
 	if not pattern: #no pattern to match
 		return []
 
-	for bookIndex, book in enumerate(db):
+	for bookIndex, book in enumerate(db): #We iterate over all the books in the db
 		matchCounter = 0
 
-		for partCount, bookPart in enumerate(book):
+		for partCount, bookPart in enumerate(book): #Iterate over the författare, titel and år parts, and see if they match
 
-			if pattern[partCount] == "--":
-				print("partMatch1!")
+			if pattern[partCount] == "--": #Matches everything
 				matchCounter += 1
 
 			elif partCount == 2: 	#If we are on the year part of the database, we have no 
 									#lists in lists and can match bookPart(["år", "something"]) directly.
 
 				if match(bookPart, pattern[partCount]):
-					print("partMatch2!")
 					matchCounter += 1
 			
-			else:
-			
-				if match(bookPart[1], pattern[partCount][1]):
-					print("match bookPart: "+ str(bookPart[1]))
-					print("with pattern: " + str(pattern[partCount][1]))
-					print("partMatch3!")
-					matchCounter += 1
+			elif match(bookPart[1], pattern[partCount][1]): #Do a standard check and see if the patterns match
+				matchCounter += 1
 				
-		if matchCounter == 3:
-			print("BookMatch!")	
+		if matchCounter == 3: #If all the parts of the book matches, the whole book matched.
 			res.append(book)
-		else:
-			print("no bookMatch!")
-		
+
 	return res
-	
-"""
-class matchTests(unittest.TestCase):
-	
-	def testAllMatch(self):
-		self.assertEqual(search(['--', "--", '--'], db), db)
-"""	
 
 db = [[['författare', ['john', 'zelle']], 
 	   ['titel', ['python', 'programming', 'an', 'introduction', 'to', 'computer', 'science']], 
@@ -91,18 +73,34 @@ db = [[['författare', ['john', 'zelle']],
 	   ['titel', ['programmering', 'i', 'lisp']], 
 	   ['år', 1993]]]
 
-#testList = [[1,[2, 5]],[3,4]]
-#res = [item for sublist in testList for item in sublist]
-#print("res" + str(res))
+class searchTests(unittest.TestCase): # 4 tests for search.
+	
+	def testAllMatch(self):
+		self.assertEqual(search(['--', "--", '--'], db), db)
 
-print(search([['författare', ['&', 'zelle']], ['titel', ['--', 'python', '--']], ['år', '&']], db))
-"""
-print(flatten([['författare', ['john', 'zelle']], 
-	   ['titel', ['python', 'programming', 'an', 'introduction', 'to', 'computer', 'science']], 
-	   ['år', 2010]]))
-"""
+	def testComputerBooks(self):
+		self.assertEqual(search(['--', ['titel', ['--', 'computer', "--"]], '--'], db), 
+		[[['författare', ['john', 'zelle']], 
+	   	['titel', ['python', 'programming', 'an', 'introduction', 'to', 'computer', 'science']], 
+	   	['år', 2010]], 
+	   	[['författare', ['j', 'glenn', 'brookshear']], 
+	   	['titel', ['computer', 'science', 'an', 'overview']], 
+	   	['år', 2011]] ])
+	
+	def testThreeNamesAuthor(self):
+		self.assertEqual(search([["författare",["&", "&", "&"]], "--", '--'], db), 
+		[[['författare', ['j', 'glenn', 'brookshear']], 
+	   	['titel', ['computer', 'science', 'an', 'overview']], 
+	   	['år', 2011]]])
+
+	def testNoMatch(self):
+		self.assertEqual(search(['--', ['titel', ['super', 'cool', "mega", "awesome", "book"]], '--'], db),
+		[])
+
+
+##########
 #6B
-
+##########
 def quicksort(seq):
 
 	if len(seq) <= 1:
@@ -119,8 +117,8 @@ def quicksort(seq):
 			bigger.append(i)
 
 	return quicksort(smaller) + [pivot] + quicksort(bigger)
-"""
-class quicksortTests(unittest.TestCase):
+
+class quicksortTests(unittest.TestCase):# 3 tests fpr quicksort.
 	def testStandardList(self):
 		self.assertEqual(quicksort([26, 4, 18, 27, 6, 4, 12]), [4, 4, 6, 12, 18, 26, 27])
 
@@ -129,11 +127,11 @@ class quicksortTests(unittest.TestCase):
 
 	def testEmptyList(self):
 		self.assertEqual(quicksort([]), [])
-"""
-"""
-def main():
+
+
+def main(): #7 tests in total 
 	unittest.main()
 
 if __name__ == '__main__':
 	main()
-	"""
+	
