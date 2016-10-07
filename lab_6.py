@@ -1,12 +1,15 @@
-#lab 6 samli627
-##########
-#6A
-##########
-import unittest
+#TDDD73 Lab 6 Algoritmer
+#Samuel Lindgren samli627 
 
+"""
+6A
+"""
+import unittest #For the tests
 
 def match(seq, pattern):
-	
+	"""
+	Match a seq to a pattern.
+	"""
 	if not pattern:
 		return not seq
 	elif pattern[0] == '--':
@@ -26,33 +29,43 @@ def match(seq, pattern):
 		return False
 
 def search(pattern, db):
-
+	"""
+	Loop through the books in the database and for every book, loop through the three parts of every book.
+	If a bookPart matches the same part of the pattern and all three parts of a book match, the book match
+	and it is added to the res list. 
+	"""
 	res = []
-	if not pattern: #no pattern to match
+	#If no pattern, then no match
+	if not pattern: 
 		return []
-
-	for bookIndex, book in enumerate(db): #We iterate over all the books in the db
+	#Iterate over all the books in the db
+	for bookIndex, book in enumerate(db): 
 		matchCounter = 0
 
-		for partCount, bookPart in enumerate(book): #Iterate over the författare, titel and år parts, and see if they match
+		#Iterate over the författare, titel and år parts, and see if they match.
+		for partCount, bookPart in enumerate(book): 
 
-			if pattern[partCount] == "--": #Matches everything
+			#"--" matches everything and will match the book part. 
+			if pattern[partCount] == "--": 
 				matchCounter += 1
 
-			elif partCount == 2: 	#If we are on the year part of the database, we have no 
-									#lists in lists and can match bookPart(["år", "something"]) directly.
+			#If it is the year part of the database, there is no 
+			#lists in lists and it can match bookPart(["år", "something"]) directly to the pattern.
+			elif partCount == 2: 	
 
 				if match(bookPart, pattern[partCount]):
 					matchCounter += 1
 			
-			elif match(bookPart[1], pattern[partCount][1]): #Do a standard check and see if the patterns match
+			#Do a standard check and see if the patterns match.
+			elif match(bookPart[1], pattern[partCount][1]): 
 				matchCounter += 1
-				
-		if matchCounter == 3: #If all the parts of the book matches, the whole book matched.
+		#If all the parts of the book matches, the whole book matched.		
+		if matchCounter == 3: 
 			res.append(book)
-
+	#Return the list with the books that matched.
 	return res
 
+#The database provided by the lab.
 db = [[['författare', ['john', 'zelle']], 
 	   ['titel', ['python', 'programming', 'an', 'introduction', 'to', 'computer', 'science']], 
 	   ['år', 2010]], 
@@ -73,8 +86,10 @@ db = [[['författare', ['john', 'zelle']],
 	   ['titel', ['programmering', 'i', 'lisp']], 
 	   ['år', 1993]]]
 
-class searchTests(unittest.TestCase): # 4 tests for search.
-	
+class searchTests(unittest.TestCase):
+	"""
+	Ckeck the four cases, all match, computer book, author with three names and book that does not exists.
+	"""
 	def testAllMatch(self):
 		self.assertEqual(search(['--', "--", '--'], db), db)
 
@@ -98,11 +113,14 @@ class searchTests(unittest.TestCase): # 4 tests for search.
 		[])
 
 
-##########
-#6B
-##########
+"""
+6B
+"""
 def quicksort(seq):
-
+	"""
+	Take the first element as pivot and sort the rest of the list in smaller and bigger and return 
+	the sorted smaller and bigger lists plus the pivot.
+	"""
 	if len(seq) <= 1:
 		return seq
 
@@ -118,7 +136,10 @@ def quicksort(seq):
 
 	return quicksort(smaller) + [pivot] + quicksort(bigger)
 
-class quicksortTests(unittest.TestCase):# 3 tests fpr quicksort.
+class quicksortTests(unittest.TestCase):
+	"""
+	Check the three cases, standard, sorted and empty.
+	"""
 	def testStandardList(self):
 		self.assertEqual(quicksort([26, 4, 18, 27, 6, 4, 12]), [4, 4, 6, 12, 18, 26, 27])
 
@@ -129,7 +150,7 @@ class quicksortTests(unittest.TestCase):# 3 tests fpr quicksort.
 		self.assertEqual(quicksort([]), [])
 
 
-def main(): #7 tests in total 
+def main(): 
 	unittest.main()
 
 if __name__ == '__main__':

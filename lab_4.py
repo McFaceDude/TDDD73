@@ -24,7 +24,7 @@ def powerset(elements):
 	#Create a temp variable of the function
 	tempPowerset = powerset(elements[1:])
 	
-	#Iterate through the elements in the list and use the temp functioncall plus a 
+	#Iterate through the elements in the list and use the temp function call plus a 
 	#second loop to generate the powerset.
 	for n in powerset(elements[1:]):
 		return tempPowerset + [[elements[0]] + n for n in powerset(elements[1:])]
@@ -52,7 +52,7 @@ def smooth(func):
 #Part 2
 def twice_smoothed_square(x):
 	"""
-	Smooth the square fucntion,
+	Smooth the square function,
 	then smooth that function,
 	then smooth that function,
 	finally, apply the last function on x.
@@ -65,7 +65,7 @@ def twice_smoothed_square(x):
 import math #Use to calculate sin 
 def twice_smoothed_sin(x):
 	"""
-	Smooth the sin fucntion,
+	Smooth the sin function,
 	then smooth that function,
 	then smooth that function,
 	finally, apply the last function on x.
@@ -84,7 +84,7 @@ def compose(f, g):
 
 def repeat(func, n):
 	"""
-	Apply the function func on itself n amount of times, return the resulting fucntion
+	Apply the function func on itself n amount of times, return the resulting function
 	"""
 	if n < 1:
 		return lambda x: x
@@ -168,7 +168,7 @@ def tree_size(tree):
 def tree_depth(tree):
 	"""
 	Call the traverse function with three lambda function;
-	inner_node_fn checks which branch is the longest and adds 1 for the lengt of the inner node,
+	inner_node_fn checks which branch is the longest and adds 1 for the length of the inner node,
 	the leaf_fn adds 1 to the length of the branch,
 	the empty_tree_fn returns 0 because it is 0 long.
 	"""

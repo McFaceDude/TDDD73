@@ -1,6 +1,6 @@
 #TDDD73 Lab 5 Språk
 #Samuel Lindgren samli627 
-#The lab instructions said to only hand in the code I wrote myself, I therfor left out the functions 
+#The lab instructions said to only hand in the code I wrote myself, I therefor left out the functions 
 #in the calc.py file. The code will not compile now because the functions are missing. 
 
 """
@@ -54,7 +54,7 @@ def eval_program(program, *opt_variables):
 
 def check_type_of_func(stmt, variables):
 	"""
-	Check what typ of stmt it is and call the appripriate function.
+	Check what type of stmt it is and call the appropriate function.
 	"""
 	#If the assignment is to a list, evaluate the list to know what it is,
 	#send the list back to check_type_of_func.
@@ -83,8 +83,8 @@ def check_type_of_func(stmt, variables):
 
 def iterate_expression(stmt, variables):
 	"""
-	If the stmt is a list, call iterate_expression with the parts of the expression seperated so that
-	they can be evaluated seperatly. This is to allow expressions with many lists in them.
+	If the stmt is a list, call iterate_expression with the parts of the expression separated so that
+	they can be evaluated separately. This is to allow expressions with many lists in them.
 	"""
 	if isconstant(stmt):
 		return stmt
@@ -124,7 +124,7 @@ def expression(left, operator, right):
 def repetition(stmt, variables):
 	"""
 	Call the iterate_expression to evaluate the repetition condition.
-	While the condition is True, apply the check_type_of_func on the statments.
+	While the condition is True, apply the check_type_of_func on the statements.
 	"""
 	while iterate_expression(repetition_condition(stmt), variables):
 		for statement in repetition_statements(stmt):
