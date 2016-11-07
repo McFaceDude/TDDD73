@@ -34,16 +34,8 @@ def powerset(elements):
 """
 def generate_height(h0, v0, t0, a):
 	"""
-	Return a lambda function that calculates the height and takes a 
-	number as argument.
-
-	Arguments:
-	h0 -- Height at time 0
-	v0 -- Speed at time 0
-	t0 -- Time 0
-	a  -- Acceleration
-	Return value:
-	Lambda function that takes an int as argument.
+	Generate a function to calculate the height with t as a unknown 
+	variable.
 	"""
 	return lambda t: h0 + v0*(t - t0) + 0.5*a*(t - t0)**2
 
@@ -53,8 +45,7 @@ def generate_height(h0, v0, t0, a):
 #Part 1
 def smooth(func):
 	"""
-	Return a lambda function that takes the average of three function 
-	calls done by the argument func.
+	Take the average of the three function calls with the DX variable.
 	"""
 	DX = 0.001
 	return lambda x: (func(x-DX) + func(x) + func(x + DX))/3
@@ -62,78 +53,56 @@ def smooth(func):
 #Part 2
 def twice_smoothed_square(x):
 	"""
-	Return the result of the smooth function applied to x squared twice,
-	and then applied to the argument x. 
-
-	Argument:
-	x -- Number
-	Return value:
-	Number
+	Smooth the square function,
+	then smooth that function,
+	then smooth that function,
+	finally, apply the last function on x.
 	"""
-	once_smoothed = smooth(lambda x: x**2)
+	smoothed_square = smooth(lambda x: x**2)
+	once_smoothed = smooth(smoothed_square)
 	twice_smoothed = smooth(once_smoothed)
 	return twice_smoothed(x)
 
 import math #Use to calculate sin 
 def twice_smoothed_sin(x):
 	"""
-	Return the result of the smooth function applied to the math 
-	operation sin, twice, and then applied to the argument x. 
-
-	Argument:
-	x -- Number
-	Return value:
-	Number
+	Smooth the sin function,
+	then smooth that function,
+	then smooth that function,
+	finally, apply the last function on x.
 	"""
-	once_smoothed = smooth(math.sin)
-	twice_smoothed = smooth(once_smoothed)
+	smoothed_sin = smooth(math.sin)
+	once_smoothed = smooth(smoothed_sin)
+	twice_smoothed= smooth(once_smoothed)
 	return twice_smoothed(x)
 
 #Part 3
 def compose(f, g):
 	"""
-	Return a lambda function that applies one function to another 
-	where the second function takes one argument as input.
-
-	Argumnets:
-	f -- Function
-	g -- Function
-	Return value:
-	Lambda function that takes one argumnet.
+	Apply the function f on the function g and return the resulting function.
 	"""
 	return lambda x: f(g(x))
 
 def repeat(func, n):
 	"""
-	Return a lambda function that apllies a function on itself n number
-	of times.
-
-	Argumnets:
-	func -- Function
-	n 	 -- number
-	Return value:
-	Lambda function.
+	Apply the function func on itself n amount of times, return the resulting function
 	"""
 	if n < 1:
 		return lambda x: x
+
 	if n == 1:
 		return func
+	#Use the compose function and call it with a recursive call to repeat.
 	else:
 		return  compose(func, repeat(func, n-1))
 
 def repeatedly_smoothed(func, n):
 	"""
-	Return a lambda function that applies the function smooth to istself 
-	n number of times and applies the result on a function.
-
-	Argumnet:
-	func -- Function
-	n 	 -- Number
-	Return value:
-	Lambda function.
+	Use the repeat function to get the smooth smoothed n times, apply 
+	that function to the input function.
 	"""
 	res = repeat(smooth, n)
-	return res(func)
+	return (res(func))
 
 """
 4D
@@ -144,9 +113,6 @@ def left_subtree(tree):
 
 def right_subtree(tree):
     return tree[2]
-
-def inner_node(tree):
-	return tree[1]
 
 def is_empty_tree(tree):
     return isinstance(tree, list) and not tree
@@ -168,18 +134,7 @@ def leaf_fn(key):
 
 def traverse(tree, inner_node_fn, leaf_fn, empty_tree_fn):
 	"""
-	Return the value of three functions applied to different sections of
-	a list.
-
-	Argumnets:
-	tree -- List stuctured as a binary search tree.
-	inner_node_fn -- Functions that is applied to inner nodes of the 
-	tree.
-	leaf-fn -- Function that is applied to leafs of the tree.
-	empty_tree_fn -- Function that is applied to empty parts of the 
-	tree.
-	Return value:
-	The result of the fucntions applied to the tree. 
+	Traverse the tree and and apply the inner_node_fn and leaf_fn to the inner nodes and leafs.
 	"""
 	if is_empty_tree(tree):
 		return empty_tree_fn()
@@ -187,41 +142,36 @@ def traverse(tree, inner_node_fn, leaf_fn, empty_tree_fn):
 	if is_leaf(tree):
 		return leaf_fn(tree)
 
-	return inner_node_fn(inner_node(tree), traverse(left_subtree(tree), inner_node_fn, leaf_fn, empty_tree_fn), 
+	#If it is not empty or a leaf, it is a inner node and we apply the inner_node_fn with a recursive 
+	#call to traverse to iterate further down the branches of the inner leaf.
+	return inner_node_fn(tree[1], traverse(left_subtree(tree), inner_node_fn, leaf_fn, empty_tree_fn), 
 		traverse(right_subtree(tree), inner_node_fn, leaf_fn, empty_tree_fn))
 
 #Part 2
 def contains_key(og_key, tree):
 	"""
-	Return a boolean depending on if a tree contains a value or not.
-
-	Arguments:
-	og_keey -- value
-	tree -- List stuctured as a binary search tree.
-	Return value:
-	Boolean
+	Call the traverse function with three lambda function;
+	inner_node_fn checks if x,y or z is the og_key we are looking for,
+	the leaf_fn checks if the leaf is the og_key,
+	the empty_tree_fn returns False.
 	"""
 	return traverse(tree, lambda x,y,z: y or z or x == og_key, lambda x : x == og_key, lambda: False)
 
 #Part 3
 def tree_size(tree):
 	"""
-	Return the number of inner nodes and leafs in a tree.
-	
-	Argument:
-	tree -- List stuctured as a binary search tree.
-	Return value:
-	Int
+	Call the traverse function with three lambda function;
+	inner_node_fn adds up the lengths of the branches,
+	the leaf_fn adds 1 to the length of the branch,
+	the empty_tree_fn returns 0 because it is 0 long.
 	"""
 	return (traverse(tree, lambda x,y,z: y + z + 1, lambda x: 1, lambda: 0))
 
 def tree_depth(tree):
 	"""
-	Return the length of the longest branch of a tree from root to leaf. 
-	
-	Argument:
-	tree -- List stuctured as a binary search tree.
-	Return value:
-	Int
+	Call the traverse function with three lambda function;
+	inner_node_fn checks which branch is the longest and adds 1 for the length of the inner node,
+	the leaf_fn adds 1 to the length of the branch,
+	the empty_tree_fn returns 0 because it is 0 long.
 	"""
 	return (traverse(tree, lambda x,y,z: max(y,z) + 1, lambda x: 1, lambda: 0))
