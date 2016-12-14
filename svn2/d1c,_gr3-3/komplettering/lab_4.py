@@ -6,7 +6,7 @@
 """
 def powerset(elements):
 	"""
-	Return the powerset of a list of elements.
+	Return the powerset of a list of elements
 	
 	Examples:
 	>>>powerset([1,2])
@@ -34,8 +34,7 @@ def powerset(elements):
 """
 def generate_height(h0, v0, t0, a):
 	"""
-	Generate a function to calculate the height with t as a unknown 
-	variable.
+	Generate a function to calculate the height with t as a unknown variable.
 	"""
 	return lambda t: h0 + v0*(t - t0) + 0.5*a*(t - t0)**2
 
@@ -45,10 +44,10 @@ def generate_height(h0, v0, t0, a):
 #Part 1
 def smooth(func):
 	"""
-	Take the average of the three function calls with the DX variable.
+	Take the average of the three function calls with the dx variable.
 	"""
-	DX = 0.001
-	return lambda x: (func(x-DX) + func(x) + func(x + DX))/3
+	dx = 0.001
+	return lambda x: (func(x-dx) + func(x) + func(x + dx))/3
 
 #Part 2
 def twice_smoothed_square(x):
@@ -98,8 +97,7 @@ def repeat(func, n):
 
 def repeatedly_smoothed(func, n):
 	"""
-	Use the repeat function to get the smooth smoothed n times, apply 
-	that function to the input function.
+	Use the repeat function to get the smooth smoothed n times, apply that function to the input function.
 	"""
 	res = repeat(smooth, n)
 	return (res(func))
